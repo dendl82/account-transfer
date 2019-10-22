@@ -1,5 +1,6 @@
-package org.dendl.excercise.model;
+package org.dendl.excercise.dao;
 
+import org.dendl.excercise.dao.Account;
 import org.junit.Test;
 
 import java.math.BigDecimal;

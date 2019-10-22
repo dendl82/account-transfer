@@ -1,4 +1,4 @@
-package org.dendl.excercise.model;
+package org.dendl.excercise.dao;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,10 +14,6 @@ public final class Account {
         this.id = ID_COUNTER.incrementAndGet();
         this.ownerName = ownerName;
         this.currentBalance = initBalance;
-    }
-
-    public Account() {
-        this.id = ID_COUNTER.incrementAndGet();
     }
 
     public int getId() {
