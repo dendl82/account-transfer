@@ -1,4 +1,4 @@
-package org.dendl.excercise.dao;
+package org.dendl.exercise.dao;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +22,7 @@ public class AccountRepositoryImpl implements Repository<Account> {
     }
 
     @Override
-    public void pairUpdate(int entityId1, int entityId2, BiConsumer<Account, Account> actionTaken) throws EntityNotFoundException {
+    public void mutualUpdate(int entityId1, int entityId2, BiConsumer<Account, Account> actionTaken) throws EntityNotFoundException {
         Account entity1 = get(entityId1);
         Account entity2 = get(entityId2);
         Object lockObj1 = entity1.getId() < entity2.getId() ? entity1 : entity2;

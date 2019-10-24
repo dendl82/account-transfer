@@ -1,4 +1,4 @@
-package org.dendl.excercise.dao;
+package org.dendl.exercise.dao;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -1,4 +1,4 @@
-package org.dendl.excercise;
+package org.dendl.exercise;
 
 import static org.junit.Assert.assertTrue;
 
@@ -7,7 +7,7 @@ import org.junit.Test;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
+public class RestServiceAppTest
 {
     /**
      * Rigorous Test :-)

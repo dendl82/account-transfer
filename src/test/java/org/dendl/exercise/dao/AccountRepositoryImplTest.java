@@ -1,4 +1,4 @@
-package org.dendl.excercise.dao;
+package org.dendl.exercise.dao;
 
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class AccountRepositoryImplTest {
         repository.insertOrUpdate(account2);
 
         long transferAmount = 500;
-        repository.pairUpdate(account2.getId(), account1.getId(), (sender, recipient) -> {
+        repository.mutualUpdate(account2.getId(), account1.getId(), (sender, recipient) -> {
             sender.withdraw(BigDecimal.valueOf(transferAmount));
             recipient.deposit(BigDecimal.valueOf(transferAmount));
         });
@@ -44,7 +44,7 @@ public class AccountRepositoryImplTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void pairUpdateNonExistingItem() throws EntityNotFoundException {
-        repository.pairUpdate(0, -1, null);
+        repository.mutualUpdate(0, -1, null);
     }
 
     @Test

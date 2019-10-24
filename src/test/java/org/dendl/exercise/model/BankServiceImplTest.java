@@ -1,18 +1,18 @@
-package org.dendl.excercise.model;
+package org.dendl.exercise.model;
 
-import org.dendl.excercise.dao.Account;
-import org.dendl.excercise.dao.AccountRepositoryImpl;
-import org.dendl.excercise.dao.EntityNotFoundException;
-import org.dendl.excercise.dao.Repository;
+import org.dendl.exercise.dao.Account;
+import org.dendl.exercise.dao.AccountRepositoryImpl;
+import org.dendl.exercise.dao.EntityNotFoundException;
+import org.dendl.exercise.dao.Repository;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class BankServiceImplTest {
 
@@ -21,33 +21,29 @@ public class BankServiceImplTest {
 
     @Before
     public void setUp() {
-        accountRepository = Mockito.mock(AccountRepositoryImpl.class);
+        accountRepository = mock(AccountRepositoryImpl.class);
         bankService = new BankServiceImpl(accountRepository);
     }
 
     @Test
     public void createAccount() {
-        Account account1 = new Account("owner#1", BigDecimal.valueOf(500));
-        Mockito.when(accountRepository.insertOrUpdate(Mockito.any(Account.class))).thenReturn(account1);
         Account resultAccount = bankService.createAccount("owner#1", BigDecimal.valueOf(500));
-        Mockito.verify(accountRepository, Mockito.atLeastOnce()).insertOrUpdate(Mockito.any(Account.class));
-
-        assertEquals(account1, resultAccount);
+        verify(accountRepository, atLeastOnce()).insertOrUpdate(eq(resultAccount));
     }
 
     @Test
     public void findExistingAccountById() throws BankServiceException, EntityNotFoundException {
         Account account1 = new Account("owner#1", BigDecimal.valueOf(500));
-        Mockito.when(accountRepository.get(1)).thenReturn(account1);
+        when(accountRepository.get(1)).thenReturn(account1);
         Account resultAccount = bankService.findAccountById(1);
-        Mockito.verify(accountRepository, Mockito.atLeastOnce()).get(Mockito.eq(1));
+        verify(accountRepository, atLeastOnce()).get(eq(1));
 
         assertEquals(account1, resultAccount);
     }
 
     @Test(expected = BankServiceException.class)
     public void findNonExistingAccountById() throws BankServiceException, EntityNotFoundException {
-        Mockito.when(accountRepository.get(5)).thenThrow(EntityNotFoundException.class);
+        when(accountRepository.get(5)).thenThrow(EntityNotFoundException.class);
         bankService.findAccountById(5);
     }
 
@@ -56,9 +52,9 @@ public class BankServiceImplTest {
         Account account1 = new Account("owner#1", BigDecimal.valueOf(500));
         Account account2 = new Account("owner#2", BigDecimal.valueOf(1500));
         Account account3 = new Account("owner#3", BigDecimal.valueOf(2500));
-        Mockito.when(accountRepository.listAll()).thenReturn(Arrays.asList(account1, account2, account3));
+        when(accountRepository.listAll()).thenReturn(Arrays.asList(account1, account2, account3));
         Collection<Account> resultAccounts = bankService.allAccounts();
-        Mockito.verify(accountRepository, Mockito.atLeastOnce()).listAll();
+        verify(accountRepository, atLeastOnce()).listAll();
 
         assertNotNull(resultAccounts);
         assertFalse(resultAccounts.isEmpty());
@@ -69,7 +65,17 @@ public class BankServiceImplTest {
     }
 
     @Test
-    public void transfer() {
-        
+    public void transfer() throws BankServiceException, EntityNotFoundException {
+        bankService.transfer(BigDecimal.valueOf(500), 1, 2);
+        verify(accountRepository, atLeastOnce())
+                .mutualUpdate(eq(1), eq(2), any());
+    }
+
+    @Test(expected = BankServiceException.class)
+    public void transferThrowsException() throws BankServiceException, EntityNotFoundException {
+        doThrow(EntityNotFoundException.class)
+                .when(accountRepository)
+                .mutualUpdate(eq(1), eq(2), any());
+        bankService.transfer(BigDecimal.valueOf(500), 1, 2);
     }
 }

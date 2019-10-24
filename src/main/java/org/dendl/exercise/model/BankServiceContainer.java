@@ -1,13 +1,13 @@
-package org.dendl.excercise.model;
+package org.dendl.exercise.model;
 
-import org.dendl.excercise.dao.AccountRepositoryImpl;
+import org.dendl.exercise.dao.AccountRepositoryImpl;
 
-public enum BankServiceBuilder {
+public enum BankServiceContainer {
     DEFAULT_BANK;
 
     private BankService bankService;
 
-    BankServiceBuilder() {
+    BankServiceContainer() {
         bankService = new BankServiceImpl(new AccountRepositoryImpl());
     }
 
