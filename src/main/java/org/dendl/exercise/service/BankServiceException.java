@@ -1,4 +1,4 @@
-package org.dendl.exercise.model;
+package org.dendl.exercise.service;
 
 public class BankServiceException extends Exception {
     public BankServiceException(String s, Throwable throwable) {

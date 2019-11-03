@@ -1,8 +1,6 @@
-package org.dendl.exercise.model;
+package org.dendl.exercise.service;
 
-import org.dendl.exercise.dao.Account;
-import org.dendl.exercise.dao.EntityNotFoundException;
-import org.dendl.exercise.dao.Repository;
+import org.dendl.exercise.model.*;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -15,8 +13,13 @@ public class BankServiceImpl implements BankService {
     }
 
     @Override
-    public Account createAccount(String owner, BigDecimal initialBalance) {
-        Account account = new Account(owner, initialBalance);
+    public Account createAccount(String owner, BigDecimal initialBalance) throws BankServiceException {
+        Account account;
+        try {
+            account = new Account(owner, initialBalance);
+        } catch (AccountIncorrectAmountValueException e) {
+            throw new BankServiceException("A new account couldn't be created.", e);
+        }
         repository.insertOrUpdate(account);
 
         return account;
@@ -26,7 +29,7 @@ public class BankServiceImpl implements BankService {
     public Account findAccountById(int id) throws BankServiceException {
         try {
             return repository.get(id);
-        } catch (EntityNotFoundException e) {
+        } catch (AccountNotFoundException e) {
             throw new BankServiceException("Such an Account doesn't exist.", e);
         }
     }
@@ -43,7 +46,7 @@ public class BankServiceImpl implements BankService {
                 accountFrom.withdraw(amount);
                 accountTo.deposit(amount);
             });
-        } catch (EntityNotFoundException e) {
+        } catch (AccountNotFoundException | AccountInsufficientBalanceException | AccountIncorrectAmountValueException e) {
             throw new BankServiceException("Transfer hasn't finished with success.", e);
         }
     }

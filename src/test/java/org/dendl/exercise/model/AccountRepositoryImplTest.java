@@ -1,4 +1,4 @@
-package org.dendl.exercise.dao;
+package org.dendl.exercise.model;
 
 import org.junit.Test;
 
@@ -11,13 +11,13 @@ public class AccountRepositoryImplTest {
 
     private Repository<Account> repository = new AccountRepositoryImpl();
 
-    @Test(expected = EntityNotFoundException.class)
-    public void getNonExistingItem() throws EntityNotFoundException {
+    @Test(expected = AccountNotFoundException.class)
+    public void getNonExistingItem() throws AccountNotFoundException {
         repository.get(0);
     }
 
     @Test
-    public void getExistingItem() throws EntityNotFoundException {
+    public void getExistingItem() throws AccountNotFoundException, AccountIncorrectAmountValueException {
         Account account = new Account("owner#1", BigDecimal.valueOf(500));
         repository.insertOrUpdate(account);
         Account resultAccount = repository.get(account.getId());
@@ -26,7 +26,7 @@ public class AccountRepositoryImplTest {
     }
 
     @Test
-    public void pairUpdate() throws EntityNotFoundException {
+    public void pairUpdate() throws AccountNotFoundException, AccountInsufficientBalanceException, AccountIncorrectAmountValueException {
         Account account1 = new Account("owner#1", BigDecimal.valueOf(500));
         Account account2 = new Account("owner#2", BigDecimal.valueOf(1500));
         repository.insertOrUpdate(account1);
@@ -42,13 +42,13 @@ public class AccountRepositoryImplTest {
         assertEquals(BigDecimal.valueOf(1000), account2.getCurrentBalance());
     }
 
-    @Test(expected = EntityNotFoundException.class)
-    public void pairUpdateNonExistingItem() throws EntityNotFoundException {
+    @Test(expected = AccountNotFoundException.class)
+    public void pairUpdateNonExistingItem() throws AccountNotFoundException, AccountInsufficientBalanceException, AccountIncorrectAmountValueException {
         repository.mutualUpdate(0, -1, null);
     }
 
     @Test
-    public void listAll() {
+    public void listAll() throws AccountIncorrectAmountValueException {
         Account account1 = new Account("owner#1", BigDecimal.valueOf(500));
         Account account2 = new Account("owner#2", BigDecimal.valueOf(1500));
         Account account3 = new Account("owner#3", BigDecimal.valueOf(2500));

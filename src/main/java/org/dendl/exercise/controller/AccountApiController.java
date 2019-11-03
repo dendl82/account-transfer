@@ -1,9 +1,9 @@
 package org.dendl.exercise.controller;
 
 import io.javalin.http.Context;
-import org.dendl.exercise.dao.Account;
-import org.dendl.exercise.model.BankServiceContainer;
-import org.dendl.exercise.model.BankServiceException;
+import org.dendl.exercise.model.Account;
+import org.dendl.exercise.service.BankServiceContainer;
+import org.dendl.exercise.service.BankServiceException;
 
 import java.util.Collection;
 
@@ -17,15 +17,21 @@ public class AccountApiController {
     }
 
     public static void createAccount(Context ctx) {
+        ResponseDto responseDto;
         CreateAccountDto dto = ctx.bodyAsClass(CreateAccountDto.class);
-        Account account = BankServiceContainer
-                .DEFAULT_BANK
-                .getBankService()
-                .createAccount(dto.owner, dto.amount);
-        dto.id = account.getId();
-        ResponseDto responseDto = new ResponseDto(RequestStatus.SUCCESS, null, dto);
+        try {
+            Account account = BankServiceContainer
+                    .DEFAULT_BANK
+                    .getBankService()
+                    .createAccount(dto.owner, dto.amount);
+            dto.id = account.getId();
+            responseDto = new ResponseDto(RequestStatus.SUCCESS, null, dto);
+            ctx.status(201);
+        } catch (BankServiceException e) {
+            responseDto = new ResponseDto(RequestStatus.FAILED, e.getMessage(), e.getCause().getMessage());
+            ctx.status(500);
+        }
         ctx.json(responseDto);
-        ctx.status(201);
     }
 
     public static void makeTransfer(Context ctx) {
